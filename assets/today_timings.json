@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-16",
+  "day": 16,
+  "month": "September",
+  "year": 2026,
+  "start": {
+    "Fajr": "05:07",
+    "Sunrise": "06:43",
+    "Dhuhr": "13:10",
+    "Asr": "17:20",
+    "Maghrib": "19:28",
+    "Isha": "20:43"
+  },
+  "jamaat": {
+    "Fajr": "06:15",
+    "Dhuhr": "13:30",
+    "Asr": "18:00",
+    "Maghrib": "19:28",
+    "Isha": "21:00"
+  }
+}

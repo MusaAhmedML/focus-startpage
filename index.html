@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Focus Dashboard</title>
+  <link rel="stylesheet" href="css/geist.css">
+  <link rel="stylesheet" href="css/app.css?v=20260818-1400">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><circle cx='12' cy='12' r='10'/></svg>">
+</head>
+<body>
+  <!-- Wallpaper Engine -->
+  <div id="wallpaper-layer" class="wp-mountain_mist"></div>
+  <div id="wallpaper-overlay"></div>
+
+  <div class="app-container">
+
+    <!-- Top Navigation / Status Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <!-- Weather Pill -->
+        <div class="pill-card weather-pill" onclick="window.openWeatherModal()" title="Click for 6-Hour Forecast">
+          <span class="pill-icon" id="weather-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.947 12.65a4 4 0 0 0-5.925-4.128M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+          </span>
+          <span class="pill-value" id="weather-temp">--°C</span>
+          <span id="weather-desc" class="text-zinc-400">Loading...</span>
+        </div>
+
+        <!-- Salah Times Countdown Pill -->
+        <div class="pill-card salah-pill" onclick="window.openSalahModal()" title="Click for Full Salah Timetable">
+          <span class="pill-icon">🕌</span>
+          <span class="salah-badge" id="salah-next-name">Asr</span>
+          <span class="pill-value" id="salah-countdown">--:--:--</span>
+          <span class="text-zinc-500 text-xs">(<span id="salah-current">Dhuhr</span>)</span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <!-- Quick Wallpaper Switcher -->
+        <button class="btn-icon-pill" onclick="window.openWallpaperModal()" title="Change Mountain Wallpaper">
+          🌄
+        </button>
+
+        <!-- Zen Mode Toggle -->
+        <button class="btn-icon-pill" onclick="window.toggleZenMode()" title="Toggle Zen / Deep Focus Mode">
+          🧘
+        </button>
+
+        <!-- Command Palette Trigger -->
+        <button class="pill-card cmd-btn" onclick="window.appPalette.open()" title="Open Command Palette (Ctrl+K)">
+          <span>Search & Actions</span>
+          <span class="cmd-hint">Ctrl K</span>
+        </button>
+
+        <!-- Settings Trigger -->
+        <button class="btn-icon-pill" onclick="window.openSettingsModal()" title="Settings & Customization">
+          ⚙
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Center (Clock + Large Vertically Expanded Deep Work & Focus Cockpit) -->
+    <main class="hero-section">
+      <div class="digital-clock" id="digital-clock">00:00</div>
+      
+      <div class="date-greeting-wrap">
+        <span id="date-display">Sunday, 16 August 2026</span>
+        <span class="dot-separator"></span>
+        <span class="greeting-text" id="greeting-display">Good afternoon, Musa</span>
+      </div>
+
+      <!-- Large Vertically Expanded Deep Work & Timer Cockpit -->
+      <div class="central-timer-card">
+        <!-- Mode Tabs -->
+        <div class="pomo-modes-bar">
+          <button class="pomo-mode-tab active" data-mode="focus" id="mode-tab-focus">Focus (25m)</button>
+          <button class="pomo-mode-tab" data-mode="shortBreak" id="mode-tab-short">Short Break (5m)</button>
+          <button class="pomo-mode-tab" data-mode="longBreak" id="mode-tab-long">Long Break (15m)</button>
+          <button class="btn-icon-timer-settings" onclick="window.toggleTimerConfigDrawer()" title="Adjust Time Durations">⚙ Times</button>
+        </div>
+
+        <!-- Timer Digits & Main Controls -->
+        <div class="timer-display-row">
+          <div class="pomo-big-digits" id="pomo-time">25:00</div>
+          
+          <div class="timer-actions-cluster">
+            <button id="pomo-toggle-btn" class="btn-pomo-large btn-idle">Start Focus</button>
+            <button id="pomo-reset-btn" class="btn-pomo-secondary" title="Reset Session">↺ Reset</button>
+            <button id="pomo-skip-btn" class="btn-pomo-secondary" title="Skip Session" onclick="window.appPomodoro.finishSession()">⏭ Skip</button>
+          </div>
+        </div>
+
+        <!-- Expandable Timing Configuration Drawer -->
+        <div id="timer-config-drawer" class="timer-config-drawer hidden">
+          <div class="timer-durations-grid">
+            <div class="duration-input-group">
+              <label>Focus (min)</label>
+              <input type="number" id="cfg-focus-min" min="1" max="180" value="25" class="input-timer-num" onchange="window.saveTimerConfig()">
+            </div>
+            <div class="duration-input-group">
+              <label>Short Break (min)</label>
+              <input type="number" id="cfg-short-min" min="1" max="60" value="5" class="input-timer-num" onchange="window.saveTimerConfig()">
+            </div>
+            <div class="duration-input-group">
+              <label>Long Break (min)</label>
+              <input type="number" id="cfg-long-min" min="1" max="90" value="15" class="input-timer-num" onchange="window.saveTimerConfig()">
+            </div>
+            <div class="duration-input-group">
+              <label>Long Break Every</label>
+              <input type="number" id="cfg-long-interval" min="1" max="12" value="4" class="input-timer-num" onchange="window.saveTimerConfig()">
+              <span class="text-[10px] text-zinc-500">sessions</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto-Transition Automation Tickboxes Row -->
+        <div class="timer-automation-row">
+          <label class="timer-checkbox-label">
+            <input type="checkbox" id="chk-auto-breaks" onchange="window.saveTimerConfig()">
+            <span class="custom-tick"></span>
+            <span>Auto-start <strong>breaks</strong> after focus</span>
+          </label>
+
+          <label class="timer-checkbox-label">
+            <input type="checkbox" id="chk-auto-focus" onchange="window.saveTimerConfig()">
+            <span class="custom-tick"></span>
+            <span>Auto-start <strong>focus</strong> after breaks</span>
+          </label>
+        </div>
+
+        <!-- Linked Task Indicator -->
+        <div id="pomo-linked-task" class="pomo-linked-task-central hidden">
+          <!-- Linked task details -->
+        </div>
+      </div>
+
+      <!-- Main Focus of the Day -->
+      <div class="focus-container">
+        <div class="focus-prompt">What is your main focus today?</div>
+        <div class="focus-input-wrap">
+          <input type="text" id="main-focus-input" class="main-focus-input" placeholder="e.g. Master Mechanics Calculus & launch crash course review..." autocomplete="off">
+          
+          <div id="main-focus-card" class="focus-card hidden">
+            <div class="focus-card-left">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="main-focus-check">
+                <span class="checkmark"></span>
+              </label>
+              <span id="main-focus-text" class="main-focus-text"></span>
+            </div>
+            <button class="btn-icon delete-btn" title="Clear Goal" onclick="window.clearMainFocus()">✕</button>
+          </div>
+        </div>
+        <div id="focus-streak" class="focus-streak-tag hidden">🔥 3 day streak</div>
+      </div>
+    </main>
+
+    <!-- Productivity Bento Grid (Schedule & Bookmarks) -->
+    <section class="bento-grid">
+      <!-- Left Bento: Schedule & Tasks Matrix -->
+      <div class="bento-card">
+        <div class="bento-header">
+          <div class="bento-title">
+            <span>📋 Schedule & Tasks</span>
+          </div>
+          <div class="tabs-row">
+            <button class="tab-chip task-tab active" data-cat="All">All</button>
+            <button class="tab-chip task-tab" data-cat="Academic">Academic</button>
+            <button class="tab-chip task-tab" data-cat="MacroStudyHub">MacroStudyHub</button>
+            <button class="tab-chip task-tab" data-cat="Dev">Dev</button>
+            <button class="tab-chip task-tab" data-cat="Completed">Done</button>
+          </div>
+        </div>
+
+        <div class="add-task-bar">
+          <input type="text" id="new-task-input" class="input-styled input-task-text" placeholder="Add task & press Enter...">
+          <select id="new-task-category" class="select-styled">
+            <option value="Academic">Academic</option>
+            <option value="MacroStudyHub">MacroStudyHub</option>
+            <option value="Dev">Dev & ML</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <select id="new-task-priority" class="select-styled">
+            <option value="P1">P1 (Urgent)</option>
+            <option value="P2" selected>P2 (Normal)</option>
+            <option value="P3">P3 (Low)</option>
+          </select>
+        </div>
+
+        <div id="task-list" class="task-list">
+          <!-- Populated by tasks.js -->
+        </div>
+      </div>
+
+      <!-- Right Bento: Bookmarks & Speed Dial Launcher -->
+      <div class="bento-card">
+        <div class="bento-header">
+          <div class="bento-title">
+            <span>⚡ Quick Launcher</span>
+          </div>
+          <div class="tabs-row">
+            <button class="tab-chip bookmark-tab active" data-cat="All">All</button>
+            <button class="tab-chip bookmark-tab" data-cat="Core">Core</button>
+            <button class="tab-chip bookmark-tab" data-cat="Academic">Academic</button>
+            <button class="tab-chip bookmark-tab" data-cat="Dev">Dev</button>
+            <button class="tab-chip" onclick="window.openAddBookmarkModal()" style="color: var(--accent-emerald)">+ Add</button>
+          </div>
+        </div>
+
+        <div id="bookmarks-grid" class="bookmarks-grid">
+          <!-- Populated by bookmarks.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflows Bento Grid (LinkedIn 3-Option Ghostwriter & MacroStudyHub Pipeline) -->
+    <section class="bento-grid workflows-bento">
+      <!-- Left Bento: LinkedIn 3-Option Post Hub & Outreach Hub -->
+      <div class="bento-card workflow-card linkedin-expanded-card">
+        <div class="bento-header">
+          <div class="bento-title">
+            <span>💼 LinkedIn 3-Option Post Hub</span>
+            <span id="linkedin-status-badge" class="status-badge badge-ready">3 Options Ready</span>
+          </div>
+          <div class="workflow-actions-cluster">
+            <button id="btn-linkedin-new-idea" class="btn-wf-accent" onclick="window.generateDifferentPostIdea()" title="Generate brand new post angles">💡 Generate Different Idea</button>
+            <button id="btn-linkedin-regen" class="btn-wf-secondary" onclick="window.regenerateLinkedInDraft()" title="Regenerate active option">🔄 Regenerate</button>
+            <button id="btn-linkedin-post" class="btn-wf-primary" onclick="window.postLinkedInDraft()" title="Publish selected option to LinkedIn">🚀 Post to LinkedIn</button>
+          </div>
+        </div>
+
+        <!-- 3 Interchangeable Option Segmented Tabs -->
+        <div id="linkedin-options-tabs" class="linkedin-options-tabs">
+          <!-- Populated by workflow-hub.js -->
+        </div>
+
+        <div class="workflow-editor-wrap">
+          <textarea id="linkedin-draft-editor" class="textarea-styled textarea-expanded" placeholder="Loading today's LinkedIn drafts..." rows="10"></textarea>
+        </div>
+
+        <div class="outreach-collapsible">
+          <div class="outreach-title">🎯 Today's Target Outreach Connections</div>
+          <div id="linkedin-outreach-list" class="outreach-list">
+            <!-- Populated via workflow-hub.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Bento: MacroStudyHub Content Pipeline & Gemma-4 Workflows -->
+      <div class="bento-card workflow-card msh-expanded-card">
+        <div class="bento-header">
+          <div class="bento-title">
+            <span>🎓 MacroStudyHub Content Pipeline</span>
+            <span class="status-badge badge-msh">Daily Engine</span>
+          </div>
+          <div class="workflow-actions-cluster">
+            <button id="btn-msh-approve" class="btn-wf-primary" onclick="window.approveMSHAssets()" title="Approve today's content for distribution">✓ Approve Daily Assets</button>
+          </div>
+        </div>
+
+        <!-- 3 Daily Marketing Posters Showcase -->
+        <div class="msh-posters-section">
+          <div class="msh-section-subtitle">🎨 Today's 3 Daily High-Fidelity Marketing Posters</div>
+          <div id="msh-posters-row" class="msh-posters-row">
+            <!-- Populated via workflow-hub.js -->
+          </div>
+        </div>
+
+        <!-- Daily Short-Form Video Concept -->
+        <div id="msh-video-preview-card" class="msh-video-preview-card">
+          <!-- Populated via workflow-hub.js -->
+        </div>
+
+        <!-- 3 Daily Autonomous Gemma-4 Workflows (Clean Horizontal Layout) -->
+        <div class="msh-workflows-wrap">
+          <div class="msh-section-subtitle">⚡ Today's Autonomous Gemma-4 Workflows</div>
+          <div id="msh-workflows-list" class="msh-workflows-list horizontal-clean">
+            <!-- Populated via workflow-hub.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Quote -->
+    <footer class="footer-quote">
+      <div class="quote-text" id="quote-text">"Success in this life and the hereafter is anchored upon discipline, sincere intention, and constant excellence."</div>
+      <div class="quote-author" id="quote-author">— Islamic Wisdom</div>
+    </footer>
+
+  </div>
+
+  <!-- ================= MODALS & FULLSCREEN OVERLAYS ================= -->
+
+  <!-- Fullscreen In-Page Covering Salah Reminder Overlay -->
+  <div id="salah-alert-overlay" class="salah-alert-overlay hidden">
+    <div class="salah-overlay-card">
+      <div class="salah-overlay-header" id="salah-overlay-title">Dhuhr has begun</div>
+      <div class="salah-overlay-jamaat hidden" id="salah-overlay-jamaat" style="margin-bottom: 16px; font-size: 13px; color: #34d399; font-family: var(--font-mono); background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); padding: 4px 14px; border-radius: 9999px; display: inline-block;">🕌 Jama'ah at Masjid: --:--</div>
+      
+      <div class="salah-overlay-arabic" id="salah-overlay-arabic">أَقِمِ الصَّلَاةَ لِدُلُوكِ الشَّمْسِ</div>
+      <div class="salah-overlay-translit" id="salah-overlay-translit">Aqimi s-salata li-duluki s-shams</div>
+      <div class="salah-overlay-meaning" id="salah-overlay-meaning">Establish prayer at the decline of the sun.</div>
+      <div class="salah-overlay-reflection" id="salah-overlay-reflection">At midday, detach from worldly noise and anchor your soul in divine peace.</div>
+
+      <div class="salah-overlay-actions">
+        <button class="btn-salah-done" onclick="window.dismissSalahAlert()">✓ I've Prayed / Dismiss</button>
+      </div>
+
+      <div class="salah-overlay-hint">Press ESC or Space to dismiss alert and stop Adhaan</div>
+    </div>
+  </div>
+
+  <!-- Fullscreen In-Page Covering Athletic Reminder Overlay (Boxing Spar, Gym, Jiu-Jitsu) -->
+  <div id="athletic-alert-overlay" class="athletic-alert-overlay hidden">
+    <div class="athletic-overlay-card">
+      <div class="athletic-overlay-badge" id="athletic-overlay-tag">BOXING SPAR PROTOCOL</div>
+      <div class="athletic-overlay-title" id="athletic-overlay-title">SPAR PROTOCOL: THE SIEGE</div>
+      <div class="athletic-overlay-identity" id="athletic-overlay-identity">Musa Ahmed | 5'7" 76kg | Pressure-Heavy Fighter</div>
+
+      <ul class="athletic-overlay-bullets" id="athletic-overlay-bullets">
+        <!-- Populated via workflow-hub.js -->
+      </ul>
+
+      <div class="athletic-overlay-recovery" id="athletic-overlay-recovery">
+        <strong>Recovery Mandate:</strong> Sauna & steam protocol with 2-3L hydration.
+      </div>
+
+      <div class="athletic-overlay-quote" id="athletic-overlay-quote">
+        "Victory belongs to those who embrace the trenches."
+      </div>
+
+      <div class="athletic-overlay-actions">
+        <button class="btn-athletic-done" onclick="window.dismissAthleticAlert()">✓ Ready for War / Dismiss</button>
+      </div>
+
+      <div class="salah-overlay-hint">Press ESC or Space to dismiss reminder</div>
+    </div>
+  </div>
+
+  <!-- High-Resolution Poster Lightbox Modal -->
+  <div id="poster-lightbox-modal" class="modal-overlay hidden" onclick="window.closePosterLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="btn-lightbox-close" onclick="window.closePosterLightbox()">✕</button>
+      <img id="lightbox-poster-img" src="" alt="High-Resolution Marketing Poster" class="lightbox-img">
+    </div>
+  </div>
+
+  <!-- In-Page Adhaan Audio Element -->
+  <audio id="salah-adhan-audio" src="assets/audio/adhan.mp3" loop preload="auto"></audio>
+
+  <!-- Wallpaper Picker Modal -->
+  <div id="wallpaper-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">🌄 Choose Mountain Wallpaper</div>
+        <button class="btn-icon" onclick="window.closeWallpaperModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="wallpaper-grid">
+          <div class="wallpaper-card" data-wp="mountain_mist" onclick="window.selectWallpaper('mountain_mist')">
+            <img src="assets/wallpapers/mountain_mist.jpg" class="wallpaper-thumb" alt="Mountain Mist">
+            <div class="wallpaper-label">Moody Mountain Mist</div>
+          </div>
+          <div class="wallpaper-card" data-wp="mountain_night" onclick="window.selectWallpaper('mountain_night')">
+            <img src="assets/wallpapers/mountain_night.jpg" class="wallpaper-thumb" alt="Starry Alps Night">
+            <div class="wallpaper-label">Starry Alps Night</div>
+          </div>
+          <div class="wallpaper-card" data-wp="mountain_dusk" onclick="window.selectWallpaper('mountain_dusk')">
+            <img src="assets/wallpapers/mountain_dusk.jpg" class="wallpaper-thumb" alt="Serene Dusk Lake">
+            <div class="wallpaper-label">Serene Dusk Lake</div>
+          </div>
+          <div class="wallpaper-card" data-wp="void" onclick="window.selectWallpaper('void')">
+            <div class="wallpaper-thumb" style="background: #09090b; display: flex; align-items: center; justify-content: center; color: #71717a; font-size: 12px;">Void Minimalist</div>
+            <div class="wallpaper-label">Obsidian Void Black</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-reset" onclick="window.closeWallpaperModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Salah Timetable Modal -->
+  <div id="salah-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">🕌 Daily Salah Timetable (Burnley, UK)</div>
+        <button class="btn-icon" onclick="window.closeSalahModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Prayer</th>
+              <th>24H</th>
+              <th>12H</th>
+              <th>Method</th>
+            </tr>
+          </thead>
+          <tbody id="salah-table-body">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+        <div class="mt-4 text-xs text-zinc-500" style="margin-top: 14px;">
+          Calculated via Hanafi Asr (2x shadow) & High-Latitude Twilight angle. Ready for custom internal script hooks.
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button class="btn-wf-primary" onclick="window.closeSalahModal(); window.testSalahAlert();" style="padding: 5px 10px; font-size: 11px;">▶ Test Salah</button>
+          <button class="btn-wf-secondary" onclick="window.closeSalahModal(); window.testAthleticAlert('Boxing');" style="padding: 5px 10px; font-size: 11px;">🥊 Test Spar</button>
+          <button class="btn-wf-secondary" onclick="window.closeSalahModal(); window.testAthleticAlert('Gym');" style="padding: 5px 10px; font-size: 11px;">🏋️ Test Gym</button>
+          <button class="btn-wf-secondary" onclick="window.closeSalahModal(); window.testAthleticAlert('Jiu-Jitsu');" style="padding: 5px 10px; font-size: 11px;">🥋 Test Jiu-Jitsu</button>
+        </div>
+        <button class="btn-reset" onclick="window.closeSalahModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hourly Weather Modal -->
+  <div id="weather-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">⛅ 6-Hour Hourly Forecast</div>
+        <button class="btn-icon" onclick="window.closeWeatherModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="weather-hourly-grid" class="hourly-grid">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-reset" onclick="window.closeWeatherModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Bookmark Modal -->
+  <div id="add-bookmark-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Add New Bookmark</div>
+        <button class="btn-icon" onclick="window.closeAddBookmarkModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Website Title</label>
+          <input type="text" id="bm-title-input" class="input-styled" placeholder="e.g. Physics & Maths Tutor">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL</label>
+          <input type="text" id="bm-url-input" class="input-styled" placeholder="e.g. physicsandmathstutor.com">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="bm-cat-input" class="select-styled">
+              <option value="Core">Core</option>
+              <option value="Academic">Academic</option>
+              <option value="Dev">Dev</option>
+              <option value="Media">Media</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Accent Color</label>
+            <select id="bm-color-input" class="select-styled">
+              <option value="#10b981">Emerald Green</option>
+              <option value="#38bdf8">Sky Blue</option>
+              <option value="#f59e0b">Amber Gold</option>
+              <option value="#8b5cf6">Purple</option>
+              <option value="#fafafa">Ice White</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-reset" onclick="window.closeAddBookmarkModal()">Cancel</button>
+        <button class="btn-pomo-large btn-idle" style="padding: 8px 18px; font-size: 13px;" onclick="window.submitNewBookmark()">Save Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings & Customization Modal -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">⚙ Dashboard Settings & Preferences</div>
+        <button class="btn-icon" onclick="window.closeSettingsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" id="setting-name" class="input-styled">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time Format</label>
+            <select id="setting-timeformat" class="select-styled">
+              <option value="24h">24-Hour (14:30)</option>
+              <option value="12h">12-Hour (2:30 PM)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">City Name</label>
+            <input type="text" id="setting-city" class="input-styled">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wallpaper</label>
+            <select id="setting-wallpaper" class="select-styled">
+              <option value="mountain_mist">Moody Mountain Mist</option>
+              <option value="mountain_night">Starry Alps Night</option>
+              <option value="mountain_dusk">Serene Dusk Lake</option>
+              <option value="void">Void Obsidian Black</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Latitude</label>
+            <input type="number" step="0.0001" id="setting-lat" class="input-styled">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Longitude</label>
+            <input type="number" step="0.0001" id="setting-lng" class="input-styled">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Asr Juristic Method</label>
+          <select id="setting-asr" class="select-styled">
+            <option value="Hanafi">Hanafi (Shadow ratio = 2x)</option>
+            <option value="Standard">Standard / Shafi / Hanbali / Maliki (Shadow ratio = 1x)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Custom Salah Script Endpoint / URL Hook (Optional)</label>
+          <input type="text" id="setting-script-endpoint" class="input-styled" placeholder="e.g. http://localhost:5000/api/salah or file:///...">
+        </div>
+
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+          <button class="btn-pomo-secondary" style="padding: 6px 12px;" onclick="window.exportConfig()">💾 Export Backup JSON</button>
+          <label class="btn-pomo-secondary" style="padding: 6px 12px; cursor: pointer;">
+            📥 Import Backup
+            <input type="file" accept=".json" onchange="window.importConfig(event)" style="display: none;">
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-reset" onclick="window.closeSettingsModal()">Cancel</button>
+        <button class="btn-pomo-large btn-idle" style="padding: 8px 18px; font-size: 13px;" onclick="window.saveSettingsForm()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal (Ctrl+K) -->
+  <div id="command-palette-modal" class="modal-overlay hidden">
+    <div class="modal-box palette-box">
+      <div class="palette-input-wrap">
+        <span>🔍</span>
+        <input type="text" id="palette-input" class="palette-input" placeholder="Type a command, bookmark, or task name..." autocomplete="off">
+        <span class="cmd-hint">ESC</span>
+      </div>
+      <div id="palette-results" class="palette-results">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/three.min.js"></script>
+  <script src="js/three-ambient.js?v=20260818-1400"></script>
+  <script src="js/prayer-engine.js?v=20260818-1400"></script>
+  <script src="js/weather.js?v=20260818-1400"></script>
+  <script src="js/storage.js?v=20260818-1400"></script>
+  <script src="js/tasks.js?v=20260818-1400"></script>
+  <script src="js/pomodoro.js?v=20260818-1400"></script>
+  <script src="js/bookmarks.js?v=20260818-1400"></script>
+  <script src="js/command-palette.js?v=20260818-1400"></script>
+  <script src="js/workflow-hub.js?v=20260818-1400"></script>
+  <script src="js/app.js?v=20260818-1400"></script>
+</body>
+</html>

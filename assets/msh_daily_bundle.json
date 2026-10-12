@@ -1,0 +1,73 @@
+{
+  "date": "2026-08-18",
+  "posters": [
+    {
+      "id": 1,
+      "title": "DIFFERENTIAL EQUATIONS. BOUNDARY CONDITIONS.",
+      "subject": "A-LEVEL MATHS",
+      "url": "assets/posters/daily_poster_1.png"
+    },
+    {
+      "id": 2,
+      "title": "LABOUR MARKETS. WAGE DETERMINATION.",
+      "subject": "A-LEVEL ECONOMICS",
+      "url": "assets/posters/daily_poster_2.png"
+    },
+    {
+      "id": 3,
+      "title": "PROJECTILE MOTION. RESOLVED COMPONENTS.",
+      "subject": "A-LEVEL PHYSICS",
+      "url": "assets/posters/daily_poster_3.png"
+    }
+  ],
+  "video": {
+    "title": "The 3 Trap Marks in A-Level Projectile Trajectories (OCR A / AQA)",
+    "duration": "48s Reel / Short",
+    "hook": "Why 75% of Year 13 students drop marks when resolving angled projectiles.",
+    "scenes": [
+      {
+        "time": "0:00 - 0:08",
+        "visual": "High-contrast trajectory arc showing orthogonal velocity vectors",
+        "narration": "Most students try to resolve velocity after calculating displacement..."
+      },
+      {
+        "time": "0:08 - 0:28",
+        "visual": "Animated step-by-step derivation eliminating parameter t",
+        "narration": "Always separate horizontal constant velocity from vertical acceleration under gravity..."
+      },
+      {
+        "time": "0:28 - 0:48",
+        "visual": "MacroStudyHub booking slide with founder offer credentials",
+        "narration": "Master every derivation with MacroStudyHub before Year 13 starts. Link in bio."
+      }
+    ],
+    "bg_music": "Nasheed Harmony (Vocal Atmospheric)"
+  },
+  "workflows": [
+    {
+      "id": "wf-math-1",
+      "title": "Edexcel Pure Maths Differential Equations Auditor",
+      "tag": "Edexcel / MEI",
+      "badge_color": "emerald",
+      "description": "Scrapes and audits PastPapers.co calculation traps for integrating factors and boundary conditions.",
+      "prompt": "Audit Edexcel Differential Equations boundary value traps."
+    },
+    {
+      "id": "wf-econ-2",
+      "title": "AQA Economics Monopsony Labour Market Simulator",
+      "tag": "AQA Economics",
+      "badge_color": "amber",
+      "description": "Simulates wage floors, MRP labour curves, and deadweight loss under monopsony.",
+      "prompt": "Simulate AQA Economics labour market monopsony graphs."
+    },
+    {
+      "id": "wf-phys-3",
+      "title": "OCR A Physics Mechanics & Gravity Traps Auditor",
+      "tag": "OCR A Physics",
+      "badge_color": "violet",
+      "description": "Audits mark scheme calculations for projectile motion and gravitational potential.",
+      "prompt": "Audit OCR A Physics projectile trajectory calculations."
+    }
+  ],
+  "status": "ready"
+}

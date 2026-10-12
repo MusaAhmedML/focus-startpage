@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Focus Dashboard",
+  "version": "1.0.0",
+  "description": "Minimalist Focus Dashboard, Salah Times, Weather, Schedule & Bookmarks for Firefox",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "focus-startpage@musaahmedml.local",
+      "strict_min_version": "109.0"
+    }
+  },
+  "permissions": [
+    "storage"
+  ],
+  "icons": {
+    "48": "assets/icons/icon-48.svg",
+    "96": "assets/icons/icon-96.svg"
+  }
+}
